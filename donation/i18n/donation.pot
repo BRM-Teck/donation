@@ -4,8 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 19.0-20260528\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-19 07:49+0000\n"
+"PO-Revision-Date: 2026-09-19 07:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -324,13 +326,21 @@ msgid "Date"
 msgstr ""
 
 #. module: donation
+#: model:ir.model.fields,field_description:donation.field_account_analytic_applicability__display_name
+#: model:ir.model.fields,field_description:donation.field_account_bank_statement_line__display_name
+#: model:ir.model.fields,field_description:donation.field_account_payment_method_line__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_campaign__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_donation__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_line__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_report__display_name
+#: model:ir.model.fields,field_description:donation.field_donation_tax_receipt__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_tax_receipt_option_switch__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_thanks_template__display_name
 #: model:ir.model.fields,field_description:donation.field_donation_validate__display_name
+#: model:ir.model.fields,field_description:donation.field_res_company__display_name
+#: model:ir.model.fields,field_description:donation.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:donation.field_res_partner__display_name
+#: model:ir.model.fields,field_description:donation.field_res_users__display_name
 msgid "Display Name"
 msgstr ""
 
@@ -440,7 +450,7 @@ msgstr ""
 #. module: donation
 #. odoo-python
 #: code:addons/donation/models/account_payment_method_line.py:0
-msgid "Donation payment method '%s'is not an inbound payment method."
+msgid "Donation payment method '%s' is not an inbound payment method."
 msgstr ""
 
 #. module: donation
@@ -452,6 +462,7 @@ msgstr ""
 #: model:ir.ui.menu,name:donation.donation_config_donation_menu
 #: model:ir.ui.menu,name:donation.donation_menu
 #: model:ir.ui.menu,name:donation.donation_title_menu
+#: model:res.groups.privilege,name:donation.privilege_donation
 #: model_terms:ir.ui.view,arch_db:donation.view_partner_property_form
 msgid "Donations"
 msgstr ""
@@ -543,24 +554,26 @@ msgid "Full in-kind donation: no journal entry generated."
 msgstr ""
 
 #. module: donation
-#: model_terms:ir.ui.view,arch_db:donation.donation_report_search
-#: model_terms:ir.ui.view,arch_db:donation.donation_search
-msgid "Group By"
-msgstr ""
-
-#. module: donation
 #: model:ir.model.fields,field_description:donation.field_donation_donation__has_message
 msgid "Has Message"
 msgstr ""
 
 #. module: donation
+#: model:ir.model.fields,field_description:donation.field_account_analytic_applicability__id
+#: model:ir.model.fields,field_description:donation.field_account_bank_statement_line__id
+#: model:ir.model.fields,field_description:donation.field_account_payment_method_line__id
 #: model:ir.model.fields,field_description:donation.field_donation_campaign__id
 #: model:ir.model.fields,field_description:donation.field_donation_donation__id
 #: model:ir.model.fields,field_description:donation.field_donation_line__id
 #: model:ir.model.fields,field_description:donation.field_donation_report__id
+#: model:ir.model.fields,field_description:donation.field_donation_tax_receipt__id
 #: model:ir.model.fields,field_description:donation.field_donation_tax_receipt_option_switch__id
 #: model:ir.model.fields,field_description:donation.field_donation_thanks_template__id
 #: model:ir.model.fields,field_description:donation.field_donation_validate__id
+#: model:ir.model.fields,field_description:donation.field_res_company__id
+#: model:ir.model.fields,field_description:donation.field_res_config_settings__id
+#: model:ir.model.fields,field_description:donation.field_res_partner__id
+#: model:ir.model.fields,field_description:donation.field_res_users__id
 msgid "ID"
 msgstr ""
 
@@ -581,6 +594,7 @@ msgstr ""
 
 #. module: donation
 #: model:ir.model.fields,help:donation.field_donation_donation__message_has_error
+#: model:ir.model.fields,help:donation.field_donation_donation__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr ""
 
@@ -897,6 +911,11 @@ msgstr ""
 #. module: donation
 #: model:ir.model.fields,field_description:donation.field_donation_donation__activity_user_id
 msgid "Responsible User"
+msgstr ""
+
+#. module: donation
+#: model:ir.model.fields,field_description:donation.field_donation_donation__message_has_sms_error
+msgid "SMS Delivery error"
 msgstr ""
 
 #. module: donation
