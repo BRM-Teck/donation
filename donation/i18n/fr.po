@@ -850,7 +850,13 @@ msgid "Partner Country"
 msgstr "Pays du partenaire"
 
 #. module: donation
+#: model_terms:ir.ui.view,arch_db:donation.account_payment_method_line_form
+msgid "Journal account"
+msgstr "Compte du journal"
+
+#. module: donation
 #: model:ir.model.fields,field_description:donation.field_donation_donation__payment_method_line_id
+#: model_terms:ir.ui.view,arch_db:donation.account_payment_method_line_form
 #: model_terms:ir.ui.view,arch_db:donation.donation_report_search
 #: model_terms:ir.ui.view,arch_db:donation.donation_search
 msgid "Payment Method"

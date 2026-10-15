@@ -8,6 +8,7 @@ from lxml import etree
 
 from odoo import Command, fields
 from odoo.exceptions import UserError
+from odoo.tests import Form
 from odoo.tests.common import TransactionCase
 
 
@@ -316,6 +317,22 @@ class TestDonation(TransactionCase):
             "//field[@name='inbound_payment_method_line_ids']//field[@name='donation']"
         )
         self.assertTrue(fields_in_list)
+
+    def test_payment_method_form_hides_method_until_journal_is_chosen(self):
+        Line = self.env["account.payment.method.line"].with_context(
+            default_donation=True, default_payment_type="inbound"
+        )
+        method = self.env.ref("account.account_payment_method_manual_in")
+        with Form(Line) as form:
+            for field in ("payment_method_id", "name", "payment_account_id"):
+                with self.assertRaises(AssertionError, msg=field):
+                    form[field] = False
+            form.journal_id = self.bank_journal
+            form.payment_method_id = method
+            form.name = "Donation form"
+        line = form.record
+        self.assertTrue(line.donation)
+        self.assertEqual(line.journal_id, self.bank_journal)
 
     def test_annual_tax_receipt(self):
         self.res_partner = self.env["res.partner"]

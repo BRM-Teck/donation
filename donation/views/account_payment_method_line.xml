@@ -11,6 +11,50 @@
         </field>
     </record>
 
+    <!-- account does not ship a form for this model: Odoo then generates one
+         with every field in model order. The journal comes first, since the
+         available methods and the account depend on it. -->
+    <record id="account_payment_method_line_form" model="ir.ui.view">
+        <field name="name">donation.account.payment.method.line.form</field>
+        <field name="model">account.payment.method.line</field>
+        <field name="arch" type="xml">
+            <form string="Payment Method">
+                <field name="available_payment_method_ids" invisible="1" />
+                <field name="default_account_id" invisible="1" />
+                <field name="payment_type" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <group>
+                        <group>
+                            <field
+                                name="journal_id"
+                                required="1"
+                                domain="[('type', 'in', ('bank', 'cash', 'credit'))]"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name="payment_method_id"
+                                invisible="not journal_id"
+                                domain="[('payment_type', '=?', context.get('default_payment_type')), ('id', 'in', available_payment_method_ids)]"
+                                options="{'no_create': True, 'no_open': True}"
+                            />
+                            <field name="name" invisible="not payment_method_id" />
+                        </group>
+                        <group invisible="not payment_method_id">
+                            <field name="donation" widget="boolean_toggle" />
+                            <field
+                                name="payment_account_id"
+                                placeholder="Journal account"
+                                options="{'no_quick_create': True}"
+                                groups="account.group_account_readonly"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="account_journal_form" model="ir.ui.view">
         <field name="name">donation.account.journal.form</field>
         <field name="model">account.journal</field>

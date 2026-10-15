@@ -24,3 +24,11 @@ class AccountPaymentMethodLine(models.Model):
                         mode.display_name,
                     )
                 )
+
+    @api.onchange("journal_id")
+    def _onchange_journal_id_payment_method(self):
+        # The methods on offer depend on the journal: a method chosen for
+        # another journal would be refused on save.
+        for line in self:
+            if line.payment_method_id not in line.available_payment_method_ids:
+                line.payment_method_id = False
