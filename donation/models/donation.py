@@ -253,7 +253,14 @@ class DonationDonation(models.Model):
         if self.bank_statement_line_id:
             account_id = self.company_id.donation_account_id.id
         else:
-            account_id = self.payment_method_line_id.payment_account_id.id
+            # Same rule as account.payment: without an outstanding account on
+            # the payment method line, the amount goes straight to the account
+            # of the journal.
+            method_line = self.payment_method_line_id
+            account_id = (
+                method_line.payment_account_id.id
+                or method_line.journal_id.default_account_id.id
+            )
             if not account_id:
                 raise UserError(
                     self.env._(

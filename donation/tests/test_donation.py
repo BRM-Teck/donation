@@ -4,7 +4,10 @@
 
 import time
 
+from lxml import etree
+
 from odoo import Command, fields
+from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -249,6 +252,68 @@ class TestDonation(TransactionCase):
         self.donation_id.done2cancel()
         self.donation_id.cancel2draft()
         self.donation_id.unlink()
+
+    def _create_donation_without_payment_account(self):
+        journal_account = self.env["account.account"].create(
+            {
+                "name": "Donation journal account",
+                "code": "TESTDONBANK",
+                "company_ids": [Command.set([self.company.id])],
+                "account_type": "asset_cash",
+            }
+        )
+        self.bank_journal.default_account_id = journal_account
+        method_line = self.payment_method_line.copy(
+            {"name": "no payment account", "payment_account_id": False}
+        )
+        self.assertFalse(method_line.payment_account_id)
+        donation = self.ddo.create(
+            {
+                "check_total": 100,
+                "partner_id": self.donor1.id,
+                "donation_date": time.strftime("%Y-%m-%d"),
+                "payment_method_line_id": method_line.id,
+                "line_ids": [
+                    Command.create(
+                        {
+                            "product_id": self.product.id,
+                            "quantity": 1,
+                            "unit_price": 100,
+                        }
+                    )
+                ],
+            }
+        )
+        return donation, journal_account
+
+    def test_donation_without_payment_account_uses_journal_account(self):
+        donation, journal_account = self._create_donation_without_payment_account()
+        donation.validate()
+        self.assertEqual(donation.state, "done")
+        counterpart = donation.move_id.line_ids.filtered(
+            lambda line: line.account_id == journal_account
+        )
+        self.assertEqual(len(counterpart), 1)
+        self.assertEqual(counterpart.debit, 100)
+
+    def test_donation_without_any_account_is_refused(self):
+        donation, _journal_account = self._create_donation_without_payment_account()
+        # Clear the account in SQL to simulate a journal set up without one,
+        # whatever the ORM would accept on write.
+        self.env.cr.execute(
+            "UPDATE account_journal SET default_account_id = NULL WHERE id = %s",
+            (self.bank_journal.id,),
+        )
+        self.bank_journal.invalidate_recordset()
+        with self.assertRaises(UserError):
+            donation.validate()
+
+    def test_journal_form_exposes_the_donation_flag(self):
+        arch = self.env["account.journal"].get_view(view_type="form")["arch"]
+        fields_in_list = etree.fromstring(arch).xpath(
+            "//field[@name='inbound_payment_method_line_ids']//field[@name='donation']"
+        )
+        self.assertTrue(fields_in_list)
 
     def test_annual_tax_receipt(self):
         self.res_partner = self.env["res.partner"]

@@ -11,6 +11,20 @@
         </field>
     </record>
 
+    <record id="account_journal_form" model="ir.ui.view">
+        <field name="name">donation.account.journal.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='inbound_payment_method_line_ids']/list/field[@name='name']"
+                position="after"
+            >
+                <field name="donation" widget="boolean_toggle" />
+            </xpath>
+        </field>
+    </record>
+
     <!-- When we'll have a search view on account.payment.method.line
             in the account module (!), we'll add a filter on donation
             and, in the action below, we'll replace the domain
