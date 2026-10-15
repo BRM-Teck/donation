@@ -299,7 +299,9 @@ class TestDonation(TransactionCase):
     def test_donation_without_any_account_is_refused(self):
         donation, _journal_account = self._create_donation_without_payment_account()
         # Clear the account in SQL to simulate a journal set up without one,
-        # whatever the ORM would accept on write.
+        # whatever the ORM would accept on write. Flush first, otherwise the
+        # pending ORM write would overwrite the SQL update.
+        self.env.flush_all()
         self.env.cr.execute(
             "UPDATE account_journal SET default_account_id = NULL WHERE id = %s",
             (self.bank_journal.id,),
